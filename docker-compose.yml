@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  gem:
+    command: /bin/bash
+    image: ruby:2.5-stretch
+    stdin_open: true
+    tty: true
+    volumes:
+      - bundle:/usr/local/bundle
+      - .:/gem:delegated
+      - "${HOME}/.gitconfig:/root/.gitconfig"
+    working_dir: /gem
+volumes:
+  bundle:

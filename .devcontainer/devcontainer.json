@@ -1,0 +1,18 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+  "dockerComposeFile": "../docker-compose.yml",
+  "extensions": [
+    "castwide.solargraph",
+    "eamodio.gitlens",
+    "misogi.ruby-rubocop"
+  ],
+  "settings": {
+    "[ruby]": {
+      "editor.formatOnSave": true,
+      "editor.formatOnSaveTimeout": 2500
+    }
+  },
+  "postCreateCommand": "bundle install && yard gems",
+  "service": "gem",
+  "workspaceFolder": "/gem"
+}
