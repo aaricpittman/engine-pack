@@ -1,0 +1,8 @@
+
+===============================================================================
+
+Add the following to your package.json scripts:
+
+  "preinstall": "bundle exec rails engine_pack:preinstall"
+
+===============================================================================
