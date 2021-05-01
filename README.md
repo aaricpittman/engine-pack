@@ -14,13 +14,47 @@ And then execute:
 
     $ bundle install
 
-Or install it yourself as:
+Finally, run the generator:
 
-    $ gem install engine_pack
+    $ rails generate engine_pack:install
 
 ## Usage
 
-TODO: Write usage instructions here
+It works by hooking into the JavaScript package managers preinstall hook via a Rake task. The Rake task copies the `files` specified in the `package.json` to a temporary directory and then install that directory as a local package.
+
+### Configuration
+
+```ruby
+require 'engine_pack'
+
+EnginePack.configure do |config|
+  config.package_manager = :npm
+  config.engines = %w[
+      engine1
+      engine2
+  ]
+end
+
+```
+
+#### Configuration Options
+
+Option/Method | Description
+--- | ---
+`package_manager` | The package manager you are using with your application. Currently supports `:npm` and `:yarn`. (default: `:npm`)
+`engine` | An array of the names of the gems/engines to include.
+
+### Preinstall Hook
+
+You'll need to add the `preinstall` script to your applications `package.json` in the `scripts` property.
+
+```json
+{
+  "scripts": {
+    "preinstall": "bundle exec rails engine_pack:preinstall"
+  }
+}
+```
 
 ## Development
 
