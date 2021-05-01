@@ -2,62 +2,47 @@
 
 require 'open3'
 
+require_relative 'command_runner'
+require_relative 'engine_package'
+require_relative 'package_manager_factory'
+
 module EnginePack
   class Preinstall
     ENV_VARIABLE_NAME = 'EP_PREINSTALL'
-    PACKAGE_MANAGER_COMMANDS = {
-      npm: 'npm install %<engine_path>s',
-      yarn: 'yarn add file:%<engine_path>s'
-    }.freeze
 
     class << self
-      def call
-        new.call
+      def call(engines:)
+        new.call(engines: engines)
       end
     end
 
-    def initialize(command_runner: Open3, gem_spec_set: Bundler.load.specs)
+    def initialize(
+      command_runner: CommandRunner.new,
+      package_manager: PackageManagerFactory.build(EnginePack.config.package_manager)
+    )
       @command_runner = command_runner
-      @gem_spec_set = gem_spec_set
+      @package_manager = package_manager
     end
 
-    def call
+    def call(engines:)
       return if ENV.fetch(ENV_VARIABLE_NAME, nil)
 
-      EnginePack.config.engines.each(&method(:install_engine))
+      engines.each(&method(:install_engine))
     end
 
     private
 
-    attr_reader :command_runner, :gem_spec_set
+    attr_reader :command_runner, :package_manager
 
     def install_engine(engine)
-      command = package_manager_command(engine)
+      engine_package = EnginePackage.new(engine)
 
-      return unless command
-
-      command_runner.popen3(
-        { ENV_VARIABLE_NAME => '1' },
-        command
-      ) do |stdin, stdout, stderr, _thread|
-        stdin.close_write
-
-        while line = stdout.gets
-          puts line
-        end
-
-        while line = stderr.gets
-          puts line
-        end
+      engine_package.with_path do |path|
+        command_runner.run(
+          package_manager.install_command(path),
+          { ENV_VARIABLE_NAME => '1' }
+        )
       end
-    end
-
-    def package_manager_command(engine)
-      engine_path = gem_spec_set.find { |s| s.name == engine }&.full_gem_path
-
-      return unless engine_path
-
-      format(PACKAGE_MANAGER_COMMANDS[EnginePack.config.package_manager], engine_path: engine_path)
     end
   end
 end

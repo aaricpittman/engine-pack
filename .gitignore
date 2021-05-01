@@ -5,6 +5,7 @@
 /doc/
 /*.gem
 /pkg/
+/spec/dummy/node_modules/
 /spec/reports/
 /tmp/
 

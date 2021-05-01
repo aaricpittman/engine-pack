@@ -1,0 +1,21 @@
+{
+  "name": "dummy_app",
+  "private": true,
+  "dependencies": {
+    "@rails/actioncable": "^6.0.0",
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
+    "@rails/webpacker": "4.3.0",
+    "dummy_engine": "file:/tmp/enginepack/dummy_engine",
+    "engine": "file:/tmp/enginepack/dummy_engine",
+    "turbolinks": "^5.2.0"
+  },
+  "version": "0.1.0",
+  "main": "index.js",
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.2"
+  },
+  "scripts": {
+    "preinstall": "bundle exec rails engine_pack:preinstall"
+  }
+}

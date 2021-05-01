@@ -7,6 +7,6 @@ namespace :engine_pack do
   task preinstall: :environment do
     exit 0 if ENV.fetch(EnginePack::Preinstall::ENV_VARIABLE_NAME, nil) == '1'
 
-    EnginePack::Preinstall.call
+    EnginePack::Preinstall.call(engines: EnginePack.config.engines)
   end
 end
